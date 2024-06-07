@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Competency Map</title>
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background: #f0f0f0;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .node {
+            cursor: pointer;
+        }
+
+        .node circle {
+            stroke: steelblue;
+            stroke-width: 2px;
+            filter: url(#drop-shadow);
+        }
+
+        .node text {
+            font: 12px sans-serif;
+            text-anchor: middle;
+            pointer-events: none;
+            fill: #333;
+            background: white;
+            border-radius: 3px;
+            padding: 2px;
+        }
+
+        .link {
+            fill: none;
+            stroke: #bbb;
+            stroke-opacity: 0.6;
+            stroke-width: 1.5px;
+        }
+
+        .link-label {
+            font: 10px sans-serif;
+            fill: #333;
+            text-anchor: middle;
+        }
+
+        .tooltip {
+            position: absolute;
+            text-align: center;
+            width: auto;
+            height: auto;
+            padding: 8px;
+            font: 12px sans-serif;
+            background: rgba(0, 0, 0, 0.7);
+            color: #fff;
+            border-radius: 8px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        #competency-map {
+            width: 100%;
+            height: 100vh;
+            overflow: auto;
+        }
+
+        svg {
+            display: block;
+        }
+
+        .legend {
+            font-size: 12px;
+        }
+
+        .legend rect {
+            stroke-width: 2;
+            stroke: white;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Interactive Competency Map</h1>
+    <div id="competency-map"></div>
+    <div id="tooltip" class="tooltip"></div>
+
+    <script>
+        const data = {
+            nodes: [
+                { id: "Foundational Knowledge and Skills", category: "foundation" },
+                { id: "Pedagogical Expertise", category: "expertise" },
+                { id: "Understanding Teaching Methodologies", category: "methodology" },
+                { id: "Primary Level Teaching Methodologies", category: "methodology" },
+                { id: "Play-Based Learning", category: "methodology" },
+                { id: "Montessori Method", category: "methodology" },
+                { id: "Storytelling", category: "methodology" },
+                { id: "Activity-Based Learning", category: "methodology" },
+                { id: "Secondary Level Teaching Methodologies", category: "methodology" },
+                { id: "Project-Based Learning", category: "methodology" },
+                { id: "Inquiry-Based Learning", category: "methodology" },
+                { id: "Flipped Classroom", category: "methodology" },
+                { id: "Collaborative Learning", category: "methodology" },
+                { id: "Evaluating Effectiveness", category: "evaluation" },
+                { id: "Formative Assessment", category: "evaluation" },
+                { id: "Summative Assessment", category: "evaluation" },
+                { id: "Feedback Mechanisms", category: "evaluation" },
+                { id: "Learning Theories", category: "theory" },
+                { id: "Primary Level Learning Theories", category: "theory" },
+                { id: "Piaget’s Theory of Cognitive Development", category: "theory" },
+                { id: "Vygotsky’s Social Development Theory", category: "theory" },
+                { id: "Behaviorism", category: "theory" },
+                { id: "Secondary Level Learning Theories", category: "theory" },
+                { id: "Constructivism", category: "theory" },
+                { id: "Social Learning Theory", category: "theory" },
+                { id: "Cognitivism", category: "theory" },
+                { id: "Application in Teaching", category: "application" },
+                { id: "Primary Level Applications", category: "application" },
+                { id: "Secondary Level Applications", category: "application" },
+                { id: "Instructional Strategies", category: "strategy" },
+                { id: "Primary Level Instructional Strategies", category: "strategy" },
+                { id: "Differentiated Instruction", category: "strategy" },
+                { id: "Scaffolding", category: "strategy" },
+                { id: "Visual Aids", category: "strategy" },
+                { id: "Secondary Level Instructional Strategies", category: "strategy" },
+                { id: "Socratic Method", category: "strategy" },
+                { id: "Case Studies", category: "strategy" },
+                { id: "Technology Integration", category: "strategy" },
+                { id: "Engagement Techniques", category: "engagement" },
+                { id: "Primary Level", category: "engagement" },
+                { id: "Secondary Level", category: "engagement" },
+                { id: "Primary Level Differentiation", category: "engagement" },
+                { id: "Secondary Level Differentiation", category: "engagement" },
+                { id: "Assessment Strategies", category: "evaluation" },
+                { id: "Communication Skills", category: "communication" },
+                { id: "Verbal Communication", category: "communication" },
+                { id: "Non-Verbal Communication", category: "communication" },
+                { id: "Listening Skills", category: "communication" },
+                { id: "Writing Skills", category: "communication" },
+                { id: "Modeling Effective Communication", category: "communication" },
+                { id: "Subject Matter Knowledge", category: "foundation" }
+            ],
+            links: [
+                { source: "Foundational Knowledge and Skills", target: "Pedagogical Expertise", value: 1 },
+                { source: "Foundational Knowledge and Skills", target: "Subject Matter Knowledge", value: 1 },
+                { source: "Pedagogical Expertise", target: "Understanding Teaching Methodologies", value: 1 },
+                { source: "Understanding Teaching Methodologies", target: "Primary Level Teaching Methodologies", value: 1 },
+                { source: "Primary Level Teaching Methodologies", target: "Play-Based Learning", value: 1 },
+                { source: "Primary Level Teaching Methodologies", target: "Montessori Method", value: 1 },
+                { source: "Primary Level Teaching Methodologies", target: "Storytelling", value: 1 },
+                { source: "Primary Level Teaching Methodologies", target: "Activity-Based Learning", value: 1 },
+                { source: "Understanding Teaching Methodologies", target: "Secondary Level Teaching Methodologies", value: 1 },
+                { source: "Secondary Level Teaching Methodologies", target: "Project-Based Learning", value: 1 },
+                { source: "Secondary Level Teaching Methodologies", target: "Inquiry-Based Learning", value: 1 },
+                { source: "Secondary Level Teaching Methodologies", target: "Flipped Classroom", value: 1 },
+                { source: "Secondary Level Teaching Methodologies", target: "Collaborative Learning", value: 1 },
+                { source: "Understanding Teaching Methodologies", target: "Evaluating Effectiveness", value: 1 },
+                { source: "Evaluating Effectiveness", target: "Formative Assessment", value: 1 },
+                { source: "Evaluating Effectiveness", target: "Summative Assessment", value: 1 },
+                { source: "Evaluating Effectiveness", target: "Feedback Mechanisms", value: 1 },
+                { source: "Pedagogical Expertise", target: "Learning Theories", value: 1 },
+                { source: "Learning Theories", target: "Primary Level Learning Theories", value: 1 },
+                { source: "Primary Level Learning Theories", target: "Piaget’s Theory of Cognitive Development", value: 1 },
+                { source: "Primary Level Learning Theories", target: "Vygotsky’s Social Development Theory", value: 1 },
+                { source: "Primary Level Learning Theories", target: "Behaviorism", value: 1 },
+                { source: "Learning Theories", target: "Secondary Level Learning Theories", value: 1 },
+                { source: "Secondary Level Learning Theories", target: "Constructivism", value: 1 },
+                { source: "Secondary Level Learning Theories", target: "Social Learning Theory", value: 1 },
+                { source: "Secondary Level Learning Theories", target: "Cognitivism", value: 1 },
+                { source: "Pedagogical Expertise", target: "Application in Teaching", value: 1 },
+                { source: "Application in Teaching", target: "Primary Level Applications", value: 1 },
+                { source: "Application in Teaching", target: "Secondary Level Applications", value: 1 },
+                { source: "Pedagogical Expertise", target: "Instructional Strategies", value: 1 },
+                { source: "Instructional Strategies", target: "Primary Level Instructional Strategies", value: 1 },
+                { source: "Primary Level Instructional Strategies", target: "Differentiated Instruction", value: 1 },
+                { source: "Primary Level Instructional Strategies", target: "Scaffolding", value: 1 },
+                { source: "Primary Level Instructional Strategies", target: "Visual Aids", value: 1 },
+                { source: "Instructional Strategies", target: "Secondary Level Instructional Strategies", value: 1 },
+                { source: "Secondary Level Instructional Strategies", target: "Socratic Method", value: 1 },
+                { source: "Secondary Level Instructional Strategies", target: "Case Studies", value: 1 },
+                { source: "Secondary Level Instructional Strategies", target: "Technology Integration", value: 1 },
+                { source: "Pedagogical Expertise", target: "Engagement Techniques", value: 1 },
+                { source: "Engagement Techniques", target: "Primary Level", value: 1 },
+                { source: "Engagement Techniques", target: "Secondary Level", value: 1 },
+                { source: "Pedagogical Expertise", target: "Differentiated Instruction", value: 1 },
+                { source: "Differentiated Instruction", target: "Primary Level Differentiation", value: 1 },
+                { source: "Differentiated Instruction", target: "Secondary Level Differentiation", value: 1 },
+                { source: "Pedagogical Expertise", target: "Assessment Strategies", value: 1 },
+                { source: "Pedagogical Expertise", target: "Communication Skills", value: 1 },
+                { source: "Communication Skills", target: "Verbal Communication", value: 1 },
+                { source: "Communication Skills", target: "Non-Verbal Communication", value: 1 },
+                { source: "Communication Skills", target: "Listening Skills", value: 1 },
+                { source: "Communication Skills", target: "Writing Skills", value: 1 },
+                { source: "Communication Skills", target: "Modeling Effective Communication", value: 1 },
+                { source: "Primary Level Teaching Methodologies", target: "Primary Level Learning Theories", value: 2 },
+                { source: "Secondary Level Teaching Methodologies", target: "Secondary Level Learning Theories", value: 2 },
+                { source: "Primary Level Teaching Methodologies", target: "Primary Level Instructional Strategies", value: 2 },
+                { source: "Secondary Level Teaching Methodologies", target: "Secondary Level Instructional Strategies", value: 2 },
+                { source: "Primary Level Learning Theories", target: "Primary Level Instructional Strategies", value: 2 },
+                { source: "Secondary Level Learning Theories", target: "Secondary Level Instructional Strategies", value: 2 },
+                { source: "Primary Level Teaching Methodologies", target: "Secondary Level Teaching Methodologies", value: 3 },
+                { source: "Primary Level Learning Theories", target: "Secondary Level Learning Theories", value: 3 },
+                { source: "Primary Level Instructional Strategies", target: "Secondary Level Instructional Strategies", value: 3 },
+                { source: "Assessment Strategies", target: "Formative Assessment", value: 1 },
+                { source: "Assessment Strategies", target: "Summative Assessment", value: 1 },
+                { source: "Primary Level", target: "Primary Level Differentiation", value: 1 },
+                { source: "Secondary Level", target: "Secondary Level Differentiation", value: 1 },
+                { source: "Differentiated Instruction", target: "Engagement Techniques", value: 1 }
+            ]
+        };
+
+        const colors = {
+            foundation: "#ff6347",
+            expertise: "#1f77b4",
+            methodology: "#2ca02c",
+            evaluation: "#ff7f0e",
+            theory: "#d62728",
+            application: "#9467bd",
+            strategy: "#8c564b",
+            engagement: "#e377c2",
+            communication: "#7f7f7f"
+        };
+
+        const width = 2000; // Increase the width to allow scrolling
+        const height = 2000; // Increase the height to allow scrolling
+
+        const svg = d3.select("#competency-map").append("svg")
+            .attr("width", width)
+            .attr("height", height);
+
+        const container = svg.append("g");
+
+        svg.call(d3.zoom().on("zoom", (event) => {
+            container.attr("transform", event.transform);
+        }));
+
+        container.append("defs").append("filter")
+            .attr("id", "drop-shadow")
+            .append("feGaussianBlur")
+            .attr("in", "SourceAlpha")
+            .attr("stdDeviation", 3)
+            .attr("result", "blur");
+
+        container.append("defs").select("filter")
+            .append("feOffset")
+            .attr("in", "blur")
+            .attr("dx", 2)
+            .attr("dy", 2)
+            .attr("result", "offsetBlur");
+
+        container.append("defs").select("filter")
+            .append("feMerge").selectAll("feMergeNode")
+            .data(["offsetBlur", "SourceGraphic"])
+            .enter().append("feMergeNode")
+            .attr("in", d => d);
+
+        const tooltip = d3.select("#tooltip");
+
+        const simulation = d3.forceSimulation(data.nodes)
+            .force("link", d3.forceLink(data.links).id(d => d.id).distance(d => 150 + (d.value * 50)))
+            .force("charge", d3.forceManyBody().strength(-200))
+            .force("center", d3.forceCenter(width / 2, height / 2))
+            .force("collide", d3.forceCollide().radius(30).iterations(2))
+            .alphaDecay(0.03)
+            .velocityDecay(0.2);
+
+        const link = container.append("g")
+            .attr("class", "links")
+            .selectAll("line")
+            .data(data.links)
+            .enter().append("line")
+            .attr("class", "link");
+
+        const linkLabels = container.append("g")
+            .attr("class", "link-labels")
+            .selectAll("text")
+            .data(data.links)
+            .enter().append("text")
+            .attr("class", "link-label")
+            .text(d => d.value);
+
+        const node = container.append("g")
+            .attr("class", "nodes")
+            .selectAll("g")
+            .data(data.nodes)
+            .enter().append("g")
+            .call(d3.drag()
+                .on("start", dragstarted)
+                .on("drag", dragged)
+                .on("end", dragended));
+
+        node.append("circle")
+            .attr("r", 15)
+            .attr("class", "node")
+            .attr("fill", d => colors[d.category]);
+
+        node.append("text")
+            .attr("dy", ".35em")
+            .attr("x", 20)
+            .style("font-size", "10px")
+            .text(d => d.id)
+            .style("stroke", "white")
+            .style("stroke-width", "0.5px")
+            .style("paint-order", "stroke fill");
+
+        node.on("mouseover", function (event, d) {
+            tooltip.transition()
+                .duration(200)
+                .style("opacity", .9);
+            tooltip.html(`<strong>${d.id}</strong><br>Category: ${d.category}`)
+                .style("left", Math.min(event.pageX + 10, width - 150) + "px")
+                .style("top", Math.min(event.pageY - 28, height - 50) + "px");
+        })
+            .on("mouseout", function (d) {
+                tooltip.transition()
+                    .duration(500)
+                    .style("opacity", 0);
+            });
+
+        simulation.on("tick", () => {
+            link
+                .attr("x1", d => d.source.x)
+                .attr("y1", d => d.source.y)
+                .attr("x2", d => d.target.x)
+                .attr("y2", d => d.target.y);
+
+            linkLabels
+                .attr("x", d => (d.source.x + d.target.x) / 2)
+                .attr("y", d => (d.source.y + d.target.y) / 2);
+
+            node.attr("transform", d => `translate(${d.x},${d.y})`);
+        });
+
+        function dragstarted(event, d) {
+            if (!event.active) simulation.alphaTarget(0.3).restart();
+            d.fx = d.x;
+            d.fy = d.y;
+        }
+
+        function dragged(event, d) {
+            d.fx = event.x;
+            d.fy = event.y;
+        }
+
+        function dragended(event, d) {
+            if (!event.active) simulation.alphaTarget(0);
+            d.fx = null;
+            d.fy = null;
+        }
+
+        // Add legend
+        const legend = container.append("g")
+            .attr("class", "legend")
+            .attr("transform", "translate(20,20)");
+
+        const categories = Object.keys(colors);
+
+        legend.selectAll("rect")
+            .data(categories)
+            .enter().append("rect")
+            .attr("x", 0)
+            .attr("y", (d, i) => i * 20)
+            .attr("width", 18)
+            .attr("height", 18)
+            .style("fill", d => colors[d]);
+
+        legend.selectAll("text")
+            .data(categories)
+            .enter().append("text")
+            .attr("x", 24)
+            .attr("y", (d, i) => i * 20 + 9)
+            .attr("dy", ".35em")
+            .text(d => d.charAt(0).toUpperCase() + d.slice(1));
+    </script>
+</body>
+
+</html>
