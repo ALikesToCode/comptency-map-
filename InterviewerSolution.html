@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Evaluation Flowchart</title>
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+    <style>
+        .node rect {
+            fill: #1a73e8; /* Google Blue for better contrast */
+            stroke: #db4437; /* Google Red for accent */
+            stroke-width: 2px;
+            rx: 10px;
+            ry: 10px;
+        }
+
+        .node text {
+            fill: #ffffff; /* Ensure text is white */
+            font-family: 'Roboto', sans-serif;
+            font-weight: bold;
+        }
+
+        .node .name {
+            font-size: 14px;
+            text-anchor: middle;
+            margin-bottom: 5px;
+        }
+
+        .node .description, .node .tools {
+            font-size: 12px;
+            text-anchor: middle;
+            fill: #ffffff;
+            white-space: pre-wrap;
+        }
+
+        .link {
+            fill: none;
+            stroke: #db4437; /* Google Red for links */
+            stroke-width: 2px;
+            marker-end: url(#arrowhead); 
+        }
+
+        #tooltip {
+            position: absolute;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: #fff;
+            padding: 8px;
+            border-radius: 4px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s ease-in-out;
+        }
+
+        #tooltip.show {
+            opacity: 1;
+        }
+
+        #tooltip h3 {
+            margin: 0 0 5px 0;
+            font-size: 14px;
+        }
+
+        #tooltip p {
+            margin: 0;
+            font-size: 12px;
+        }
+
+        body {
+            overflow: hidden;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        svg {
+            overflow: visible;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="tooltip"></div> 
+
+    <script>
+        const data = {
+            name: "Start",
+            children: [
+                {
+                    name: "Pre-Evaluation Stage",
+                    children: [
+                        {
+                            name: "Profile Review",
+                            children: [
+                                { 
+                                    name: "Document Parsing", 
+                                    description: "Extract text and structure from various profile formats (PDF, DOCX, TXT).",
+                                    tools: "PDFMiner, Apache Tika, PyPDF2" 
+                                },
+                                { 
+                                    name: "Information Extraction", 
+                                    description: "Identify and categorize key information such as work experience, education, skills, and certifications.",
+                                    tools: "SpaCy NER, Stanford NER, BERT-based NER" 
+                                },
+                                { 
+                                    name: "Data Validation & Cleaning",
+                                    description: "Standardize formats, handle inconsistencies, and ensure data accuracy for further processing.",
+                                    tools: "Regular Expressions, Rule-based approaches, Data validation libraries"
+                                }
+                            ]
+                        },
+                        {
+                            name: "Course Assignment Analysis",
+                            children: [
+                                { 
+                                    name: "Course Description Parsing", 
+                                    description: "Extract relevant information like course title, objectives, required skills, and qualifications from course descriptions.",
+                                    tools: "Similar to Profile Parsing (PDFMiner, Tika, etc.), NLP techniques for structured extraction" 
+                                },
+                                { 
+                                    name: "Skill & Requirement Extraction", 
+                                    description: "Pinpoint essential skills and experience requirements from the parsed course description.",
+                                    tools: "Word Embeddings (Word2Vec, GloVe), TF-IDF, Domain-specific Skill Ontologies" 
+                                }
+                            ]
+                        },
+                        {
+                            name: "Teacher Profile Creation",
+                            description: "Aggregate extracted information to create a comprehensive teacher profile, ready for matching and evaluation.",
+                            tools: "Data structuring techniques (JSON, XML), Database management systems"
+                        }
+                    ]
+                },
+                {
+                    name: "Evaluation Stage",
+                    children: [
+                        {
+                            name: "Assessment Management",
+                            children: [
+                                {
+                                    name: "Adaptive Questioning",
+                                    description: "Dynamically select questions based on teacher profile, course requirements, and previous responses.",
+                                    tools: "Reinforcement Learning, Decision Trees, Rule-based systems" 
+                                },
+                                {
+                                    name: "Real-time Difficulty Adjustment",
+                                    description: "Adjust the complexity and type of questions based on the teacher's performance and confidence levels.",
+                                    tools: "Sentiment analysis of responses, Confidence scoring mechanisms, Natural Language Understanding (NLU)" 
+                                }
+                            ]
+                        },
+                        {
+                            name: "Question Presentation",
+                            description: "Deliver assessment questions naturally and engagingly through a virtual interviewer or chatbot interface.",
+                            tools: "Dialogflow, Rasa, Microsoft Bot Framework, Amazon Lex" 
+                        },
+                        {
+                            name: "Multi-Modal Response Capture",
+                            description: "Record and analyze teacher responses through text, audio, and potentially video for a holistic assessment.",
+                            tools: "Speech Recognition (Google Cloud Speech-to-Text, AssemblyAI), Web Camera Integration" 
+                        }
+                    ]
+                },
+                {
+                    name: "Post-Evaluation Stage",
+                    children: [
+                        {
+                            name: "Response Analysis & Competency Mapping",
+                            children: [
+                                {
+                                    name: "Natural Language Processing (NLP)",
+                                    description: "Analyze text responses for content, structure, sentiment, and relevance to the course requirements.",
+                                    tools: "Sentiment Analysis (VADER, TextBlob), Keyword Extraction (TF-IDF, RAKE), Topic Modeling (LDA)"
+                                },
+                                { 
+                                    name: "Audio & Visual Analysis (Optional)",
+                                    description: "If video is enabled, analyze audio for tone, fluency, and pauses; analyze video for body language and engagement.",
+                                    tools: "Speech Emotion Recognition (Emo-DB, IEMOCAP, Praat), Facial Expression Recognition (OpenFace, Affectiva)" 
+                                },
+                                {
+                                    name: "Skill & Competency Mapping",
+                                    description: "Assess the teacher's demonstrated skills and competencies against the course requirements and industry benchmarks.",
+                                    tools: "Skill Ontologies, Machine Learning models trained on competency frameworks" 
+                                }
+                            ]
+                        },
+                        {
+                            name: "Feedback & Recommendations",
+                            children: [
+                                { 
+                                    name: "Automated Report Generation", 
+                                    description: "Generate a comprehensive report summarizing assessment performance, highlighting strengths, weaknesses, and areas for improvement.",
+                                    tools: "Natural Language Generation (NLG) models like GPT-3, T5, BART" 
+                                },
+                                {
+                                    name: "Improvement Recommendations",
+                                    description: "Provide personalized recommendations for skill enhancement and professional development based on assessment results.",
+                                    tools: "Machine Learning recommendation systems, Skill gap analysis tools" 
+                                }
+                            ]
+                        } 
+                    ]
+                },
+                { name: "End", description: "" }
+            ]
+        };
+
+        const width = 2000;
+        const height = 5000;
+        const nodeWidth = 250;
+        const nodeHeight = 300; // Increased to accommodate tools
+        const nodeSpacing = 50;
+
+        const svg = d3.select("body").append("svg")
+            .attr("width", width)
+            .attr("height", height)
+            .call(d3.zoom().on("zoom", function (event) {
+                svg.attr("transform", event.transform);
+            }))
+            .append("g")
+            .attr("transform", "translate(40,40)");
+
+        const tree = d3.tree()
+            .nodeSize([nodeHeight + nodeSpacing, nodeWidth + nodeSpacing]);
+
+        const root = d3.hierarchy(data, d => d.children);
+        tree(root);
+
+        svg.append("defs")
+            .append("marker")
+            .attr("id", "arrowhead")
+            .attr("viewBox", "0 0 10 10") 
+            .attr("refX", 9)
+            .attr("refY", 5)
+            .attr("markerWidth", 6)
+            .attr("markerHeight", 6)
+            .attr("orient", "auto-start-reverse") 
+            .append("path")
+            .attr("d", "M 0 0 L 10 5 L 0 10 z")
+            .attr("fill", "#db4437");
+
+        const link = svg.selectAll(".link")
+            .data(root.links())
+            .enter().append("path")
+            .attr("class", "link")
+            .attr("d", d3.linkHorizontal()
+                .x(d => d.y)
+                .y(d => d.x)
+            );
+
+        const node = svg.selectAll(".node")
+            .data(root.descendants())
+            .enter().append("g")
+            .attr("class", "node")
+            .attr("transform", d => `translate(${d.y},${d.x})`)
+            .on("mouseover", showTooltip)
+            .on("mouseout", hideTooltip);
+
+        node.append("rect")
+            .attr("width", nodeWidth)
+            .attr("height", nodeHeight)
+            .attr("x", -nodeWidth / 2)
+            .attr("y", -nodeHeight / 2)
+            .attr("rx", 10)
+            .attr("ry", 10);
+
+        node.append("foreignObject")
+            .attr("x", -nodeWidth / 2)
+            .attr("y", -nodeHeight / 2 + 10)
+            .attr("width", nodeWidth)
+            .attr("height", 40)
+            .append("xhtml:div")
+            .attr("class", "name")
+            .style("width", nodeWidth + "px")
+            .style("text-align", "center")
+            .style("font-weight", "bold")
+            .style("color", "#ffffff") /* Ensure text is white */
+            .text(d => d.data.name);
+
+        node.append("foreignObject")
+            .attr("x", -nodeWidth / 2 + 10)
+            .attr("y", -nodeHeight / 2 + 50)
+            .attr("width", nodeWidth - 20)
+            .attr("height", nodeHeight - 120)
+            .append("xhtml:div")
+            .attr("class", "description")
+            .style("text-align", "center")
+            .style("color", "#ffffff") /* Ensure text is white */
+            .html(d => d.data.description ? d.data.description : "");
+
+        node.append("foreignObject")
+            .attr("x", -nodeWidth / 2 + 10)
+            .attr("y", nodeHeight / 2 - 50) /* Positioned just below description */
+            .attr("width", nodeWidth - 20)
+            .attr("height", 40)
+            .append("xhtml:div")
+            .attr("class", "tools")
+            .style("text-align", "center")
+            .style("color", "#ffffff") /* Ensure text is white */
+            .text(d => d.data.tools ? `Tools: ${d.data.tools}` : "");
+
+        function showTooltip(event, d) {
+            const tooltip = d3.select("#tooltip");
+            tooltip.transition()
+                .duration(200)
+                .style("opacity", 1);
+            tooltip.html(`
+                <h3>${d.data.name}</h3>
+                <p>${d.data.description || ""}</p>
+                ${d.data.tools ? `<p><strong>Tools:</strong> ${d.data.tools}</p>` : ""}
+            `)
+                .style("left", (event.pageX + 10) + "px")
+                .style("top", (event.pageY - 10) + "px");
+        }
+
+        function hideTooltip() {
+            d3.select("#tooltip")
+                .transition()
+                .duration(200)
+                .style("opacity", 0);
+        }
+
+    </script>
+</body>
+</html>
