@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Evaluation and Improvement Platform Flowchart</title>
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            overflow: hidden; /* Prevent scrollbars when the chart extends beyond the viewport */
+        }
+        svg {
+            overflow: visible; /* Allow the chart elements to extend beyond the SVG boundaries */
+            background-color: #f5f5f5; /* Light background for better contrast */
+        }
+        .node rect {
+            fill: #1a73e8; /* Google Blue */
+            stroke: #db4437; /* Google Red */
+            stroke-width: 3px; 
+            rx: 15px; /* Rounded corners */
+            ry: 15px;
+            padding: 10px;
+        }
+        .node text {
+            fill: white; 
+            font-weight: bold;
+            text-anchor: middle;
+            padding: 10px; 
+        }
+        .node .name {
+            font-size: 16px; 
+        }
+        .node .description {
+            font-size: 12px;
+            white-space: pre-wrap; /* Allow text to wrap within the description box */
+        }
+        .node .tools {
+            font-size: 10px;
+            font-style: italic;
+            fill: #f0f0f0; /* Lighter white for tools */
+            padding: 10px;
+        }
+        .link {
+            fill: none;
+            stroke: #db4437; /* Google Red */
+            stroke-width: 2px;
+            marker-end: url(#arrowhead);
+        }
+        #tooltip {
+            position: absolute;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            pointer-events: none; 
+            opacity: 0;
+            transition: opacity 0.2s ease-in-out;
+        }
+        #tooltip.show {
+            opacity: 1;
+        }
+        #tooltip h3 {
+            margin: 0 0 5px 0;
+            font-size: 16px;
+        }
+        #tooltip p {
+            margin: 0;
+            font-size: 12px;
+        }
+        #arrowhead {
+            fill: #db4437; /* Google Red for the arrowhead */
+        }
+    </style>
+</head>
+<body>
+    <div id="tooltip"></div>
+
+    <script>
+        // Data for the flowchart
+        const data = {
+            name: "Start",
+            description: "The journey of a teacher on the platform begins",
+            tools: "", 
+            children: [
+                {
+                    name: "Teacher Enrollment & Profile Creation",
+                    description: "Teachers create detailed profiles showcasing their qualifications and experience.",
+                    tools: "", 
+                    children: [
+                        {
+                            name: "Profile Data Processing",
+                            description: "The platform intelligently analyzes and structures the teacher's profile information.",
+                            tools: "",
+                            children: [
+                                { 
+                                    name: "Document Parsing", 
+                                    description: "Extract text and structure from various profile formats (PDF, DOCX, TXT).",
+                                    tools: "PDFMiner, Apache Tika, PyPDF2" 
+                                },
+                                { 
+                                    name: "Information Extraction", 
+                                    description: "Identify and categorize key information like work experience, education, skills, and certifications.",
+                                    tools: "SpaCy NER, Stanford NER, BERT-based NER" 
+                                },
+                                { 
+                                    name: "Data Validation & Cleaning",
+                                    description: "Standardize formats, handle inconsistencies, and ensure data accuracy.",
+                                    tools: "Regular Expressions, Rule-based approaches, Data validation libraries"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    name: "Initial Assessment",
+                    description: "An adaptive assessment evaluates the teacher's current competencies.",
+                    tools: "",
+                    children: [
+                        {
+                            name: "Assessment Delivery",
+                            description: "Questions are delivered in an engaging and interactive way.",
+                            tools: "",
+                            children: [
+                                {
+                                    name: "Adaptive Questioning",
+                                    description: "Dynamically select questions based on the teacher's profile, course requirements, and past responses.",
+                                    tools: "Reinforcement Learning, Decision Trees, Rule-based systems" 
+                                },
+                                {
+                                    name: "Real-time Difficulty Adjustment",
+                                    description: "Adjust the complexity of questions in real-time based on performance and confidence.",
+                                    tools: "Sentiment analysis, Confidence scoring, Natural Language Understanding (NLU)" 
+                                }
+                            ]
+                        },
+                        {
+                            name: "Question Presentation",
+                            description: "Questions are presented through a virtual interviewer or an intelligent chatbot.",
+                            tools: "Dialogflow, Rasa, Microsoft Bot Framework, Amazon Lex" 
+                        },
+                        {
+                            name: "Response Capture",
+                            description: "Teacher responses are captured in various formats (text, audio, video).",
+                            tools: "Speech Recognition (Google Cloud Speech-to-Text, AssemblyAI), Web Camera Integration" 
+                        }
+                    ]
+                },
+                {
+                    name: "Competency Mapping & Feedback",
+                    description: "The platform generates a detailed competency map highlighting strengths and areas for improvement.",
+                    tools: "",
+                    children: [
+                        {
+                            name: "Response Analysis & Mapping",
+                            description: "AI-powered analysis of teacher responses for deeper insights.",
+                            tools: "", 
+                            children: [
+                                {
+                                    name: "Natural Language Processing (NLP)",
+                                    description: "Analyzes text responses for content, structure, sentiment, and relevance to the course.",
+                                    tools: "Sentiment Analysis (VADER, TextBlob), Keyword Extraction (TF-IDF, RAKE), Topic Modeling (LDA)"
+                                },
+                                { 
+                                    name: "Skill & Competency Mapping",
+                                    description: "Teacher's skills are mapped against course requirements and industry standards.",
+                                    tools: "Skill Ontologies, Machine Learning models" 
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    name: "Personalized Recommendations",
+                    description: "Tailored suggestions for courses and resources to address the teacher's specific needs.",
+                    tools: "", 
+                    children: [
+                        { 
+                            name: "AI-Based Content Recommendations", 
+                            description: "Intelligent suggestions for relevant resources and courses.",
+                            tools: "Recommendation Systems (Collaborative Filtering, Content-Based Filtering)" 
+                        },
+                        {
+                            name: "Improvement Recommendations",
+                            description: "Personalized advice for skill enhancement and professional development.",
+                            tools: "Machine Learning recommendation systems, Skill gap analysis tools" 
+                        }
+                    ]
+                },
+                {
+                    name: "Learning and Development",
+                    description: "Teachers engage with recommended resources and enhance their skills.",
+                    tools: "", 
+                    children: [
+                        {
+                            name: "Adaptive Learning Algorithms",
+                            description: "Personalized learning paths and adaptive content delivery.",
+                            tools: "Adaptive Learning Systems, Machine Learning Algorithms"
+                        },
+                        {
+                            name: "Gamified Learning",
+                            description: "Engaging gamified modules powered by AI for better learning and retention.",
+                            tools: "",
+                            children: [
+                                {
+                                    name: "Gamification Elements Design",
+                                    description: "Design gamification elements like badges, points, leaderboards, and rewards.",
+                                    tools: "Classcraft, Kahoot!, BadgeOS, Leaderboarded"
+                                },
+                                {
+                                    name: "Interactive Quizzes and Challenges",
+                                    description: "Create engaging quizzes and challenges that promote active learning.",
+                                    tools: "Quizlet, Kahoot!, Socrative, Typeform"
+                                },
+                                {
+                                    name: "Progress Tracking and Feedback",
+                                    description: "Provide real-time feedback and track progress to motivate learners.",
+                                    tools: "Moodle, Google Analytics, Tableau, Edmodo"
+                                },
+                                {
+                                    name: "Social Learning and Collaboration",
+                                    description: "Foster a collaborative learning environment with social interactions and team-based activities.",
+                                    tools: "Edmodo, Slack, Microsoft Teams, Google Classroom"
+                                },
+                                {
+                                    name: "Virtual and Augmented Reality",
+                                    description: "Enhance learning experiences with VR/AR simulations and activities.",
+                                    tools: "Unity, Google Expeditions, ARKit, ARCore"
+                                }
+                            ]
+                        },
+                        {
+                            name: "AI-Powered Analytics",
+                            description: "Real-time tracking of learning progress and performance using advanced analytics.",
+                            tools: "Data Analytics Platforms (Tableau, Power BI), Machine Learning models",
+                            children: [
+                                {
+                                    name: "Personalized Learning and Recommendation Engine",
+                                    description: "AI-driven engine providing tailored recommendations for professional development.",
+                                    tools: "Collaborative Filtering, Content-Based Filtering, Hybrid Models, Knowledge-Based Systems",
+                                    children: [
+                                        {
+                                            name: "Data Collection and Feature Engineering",
+                                            description: "Gather and preprocess teacher data.",
+                                            tools: "Python (Pandas, NumPy), Jupyter Notebook"
+                                        },
+                                        {
+                                            name: "Model Selection and Training",
+                                            description: "Train ML models for personalized recommendations.",
+                                            tools: "Scikit-learn, TensorFlow, PyTorch, Surprise"
+                                        },
+                                        {
+                                            name: "Recommendation Generation",
+                                            description: "Develop API to deliver personalized recommendations.",
+                                            tools: "Python, Flask"
+                                        },
+                                        {
+                                            name: "Feedback Loop and Model Refinement",
+                                            description: "Continuously improve models based on feedback.",
+                                            tools: "Python (Pandas, NumPy), Jupyter Notebook"
+                                        }
+                                    ]
+                                },
+                                {
+                                    name: "Automated Feedback Generation",
+                                    description: "Generate personalized feedback using NLP and NLG.",
+                                    tools: "GPT-3, T5, BART, SpaCy, NLTK, Gensim",
+                                    children: [
+                                        {
+                                            name: "Data Input",
+                                            description: "Collect and preprocess assessment and feedback data.",
+                                            tools: "Python (Pandas, NumPy)"
+                                        },
+                                        {
+                                            name: "Natural Language Processing",
+                                            description: "Analyze text responses for insights.",
+                                            tools: "SpaCy, NLTK, Gensim"
+                                        },
+                                        {
+                                            name: "Feedback Generation",
+                                            description: "Generate feedback using NLG techniques.",
+                                            tools: "GPT-3, T5, BART"
+                                        },
+                                        {
+                                            name: "Template Customization",
+                                            description: "Create customizable templates for feedback.",
+                                            tools: "Jinja2, HTML/CSS"
+                                        }
+                                    ]
+                                },
+                                {
+                                    name: "Predictive Analytics for Personalized Interventions",
+                                    description: "Predict teacher performance and recommend interventions.",
+                                    tools: "Scikit-learn, TensorFlow, PyTorch",
+                                    children: [
+                                        {
+                                            name: "Data Collection and Feature Selection",
+                                            description: "Gather historical performance data and select features.",
+                                            tools: "Python (Pandas, NumPy)"
+                                        },
+                                        {
+                                            name: "Model Training and Evaluation",
+                                            description: "Train predictive models and evaluate their performance.",
+                                            tools: "Scikit-learn, TensorFlow, PyTorch"
+                                        },
+                                        {
+                                            name: "Prediction and Intervention Recommendation",
+                                            description: "Recommend interventions based on predictions.",
+                                            tools: "Python, Flask"
+                                        },
+                                        {
+                                            name: "Monitoring and Refinement",
+                                            description: "Monitor and refine models based on intervention outcomes.",
+                                            tools: "Python (Pandas, NumPy)"
+                                        }
+                                    ]
+                                },
+                                {
+                                    name: "AI-Powered Content Creation and Curation",
+                                    description: "Automate content creation and recommendation.",
+                                    tools: "GPT-3, T5, BART, SpaCy, NLTK, Gensim",
+                                    children: [
+                                        {
+                                            name: "Content Database",
+                                            description: "Store and organize educational resources.",
+                                            tools: "SQL/NoSQL databases"
+                                        },
+                                        {
+                                            name: "Natural Language Processing",
+                                            description: "Analyze and categorize content.",
+                                            tools: "SpaCy, NLTK, Gensim"
+                                        },
+                                        {
+                                            name: "Topic Modeling and Clustering",
+                                            description: "Group similar resources using LDA.",
+                                            tools: "Gensim, Scikit-learn"
+                                        },
+                                        {
+                                            name: "Recommendation System",
+                                            description: "Develop recommendation system for resources.",
+                                            tools: "Collaborative Filtering, Content-Based Filtering"
+                                        },
+                                        {
+                                            name: "Automatic Content Generation",
+                                            description: "Generate educational content using NLG.",
+                                            tools: "GPT-3, T5, BART"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    name: "Continuous Reassessment",
+                    description: "Reassessments measure the teacher's progress and further refine improvement recommendations.",
+                    tools: "", 
+                    children: [
+                        {
+                            name: "Live AI-Driven Assessments",
+                            description: "Real-time evaluations with personalized feedback, adapting to the teacher's learning.",
+                            tools: "Real-time NLP, Adaptive Learning Systems"
+                        },
+                        {
+                            name: "Automated Grading",
+                            description: "Fast and accurate grading for various types of assessments.",
+                            tools: "Automated Grading Systems, OCR for handwritten scripts"
+                        }
+                    ]
+                },
+                {
+                    name: "Certification & Secure Storage",
+                    description: "Upon achieving competency, teachers receive verifiable digital credentials.",
+                    tools: "", 
+                    children: [
+                        {
+                            name: "Blockchain-Based Certification",
+                            description: "Secure, tamper-proof digital certificates for achieved competencies.",
+                            tools: "Blockchain platforms (Ethereum, Hyperledger)"
+                        },
+                        {
+                            name: "Secure Data Storage",
+                            description: "Secure cloud storage for personal and professional data with blockchain-level security.",
+                            tools: "Cloud Storage Solutions (AWS, Google Cloud, Azure), Blockchain for Security"
+                        }
+                    ]
+                },
+                {
+                    name: "24/7 Support",
+                    description: "Continuous AI-powered support available to assist teachers throughout their journey.",
+                    tools: "Chatbot Platforms (Dialogflow, Rasa, Microsoft Bot Framework, Amazon Lex)"
+                },
+                { 
+                    name: "End",
+                    description: "The teacher completes the program with enhanced skills and a secure, verifiable certificate.",
+                    tools: "" 
+                }
+            ]
+        };
+
+        // Dimensions and settings for the flowchart
+        const width = 1800; 
+        const height = 3000;
+        const nodeWidth = 200;
+        const nodeHeight = 120;
+        const nodeSpacing = 80;
+
+        // Create the SVG element for the flowchart
+        const svg = d3.select("body").append("svg")
+            .attr("width", width)
+            .attr("height", height)
+            .call(d3.zoom().on("zoom", function (event) {
+                svg.attr("transform", event.transform); 
+            }))
+            .append("g")
+            .attr("transform", "translate(100,100)"); 
+
+        // Configure the tree layout
+        const tree = d3.tree()
+            .nodeSize([nodeHeight + nodeSpacing, nodeWidth + nodeSpacing]); 
+
+        // Convert the data into a hierarchical structure
+        const root = d3.hierarchy(data, d => d.children);
+        tree(root); 
+
+        // Create the arrowhead marker for links
+        svg.append("defs")
+            .append("marker")
+            .attr("id", "arrowhead")
+            .attr("viewBox", "0 0 10 10")
+            .attr("refX", 9) 
+            .attr("refY", 5)
+            .attr("markerWidth", 6)
+            .attr("markerHeight", 6)
+            .attr("orient", "auto-start-reverse") 
+            .append("path")
+            .attr("d", "M 0 0 L 10 5 L 0 10 z");
+
+        // Draw the links between nodes
+        const link = svg.selectAll(".link")
+            .data(root.links()) 
+            .enter().append("path")
+            .attr("class", "link")
+            .attr("d", d3.linkHorizontal() 
+                .x(d => d.y)
+                .y(d => d.x)
+            );
+
+        // Create the groups for each node (rect, text)
+        const node = svg.selectAll(".node")
+            .data(root.descendants()) 
+            .enter().append("g")
+            .attr("class", "node")
+            .attr("transform", d => `translate(${d.y},${d.x})`) 
+            .on("mouseover", showTooltip) 
+            .on("mouseout", hideTooltip); 
+
+        // Draw the rectangles for each node
+        node.append("rect")
+            .attr("width", nodeWidth)
+            .attr("height", nodeHeight)
+            .attr("x", -nodeWidth / 2) 
+            .attr("y", -nodeHeight / 2); 
+
+        // Add the name of each node using foreignObject for text wrapping
+        node.append("foreignObject")
+            .attr("x", -nodeWidth / 2)
+            .attr("y", -nodeHeight / 2 + 10)
+            .attr("width", nodeWidth)
+            .attr("height", 40)
+            .append("xhtml:div")
+            .attr("class", "name")
+            .style("width", nodeWidth + "px")
+            .style("text-align", "center")
+            .style("font-weight", "bold")
+            .style("color", "#ffffff") /* Ensure text is white */
+            .text(d => d.data.name);
+
+        // Add the description of each node using foreignObject for text wrapping
+        node.append("foreignObject")
+            .attr("x", -nodeWidth / 2 + 10)
+            .attr("y", -nodeHeight / 2 + 50)
+            .attr("width", nodeWidth - 20)
+            .attr("height", nodeHeight - 80)
+            .append("xhtml:div")
+            .attr("class", "description")
+            .style("text-align", "center")
+            .style("color", "#ffffff") /* Ensure text is white */
+            .html(d => d.data.description ? d.data.description : "");
+
+        // Add the tools used in each node (below description) using foreignObject for text wrapping
+        node.append("foreignObject")
+            .attr("x", -nodeWidth / 2 + 10)
+            .attr("y", nodeHeight / 2 - 30) /* Positioned just below description */
+            .attr("width", nodeWidth - 20)
+            .attr("height", 20)
+            .append("xhtml:div")
+            .attr("class", "tools")
+            .style("text-align", "center")
+            .style("color", "#ffffff") /* Ensure text is white */
+            .text(d => d.data.tools ? `Tools: ${d.data.tools}` : "");
+
+        // Functions to show and hide the tooltip on hover
+        function showTooltip(event, d) {
+            d3.select("#tooltip") 
+                .transition()
+                .duration(200) 
+                .style("opacity", 1);
+            d3.select("#tooltip").html(` 
+                <h3>${d.data.name}</h3>
+                <p>${d.data.description}</p>
+                ${d.data.tools ? `<p>Tools: ${d.data.tools}</p>` : ""}
+            `)
+                .style("left", (event.pageX + 10) + "px") 
+                .style("top", (event.pageY - 10) + "px"); 
+        }
+
+        function hideTooltip() {
+            d3.select("#tooltip")
+                .transition()
+                .duration(200)
+                .style("opacity", 0);
+        }
+    </script>
+</body>
+</html>
