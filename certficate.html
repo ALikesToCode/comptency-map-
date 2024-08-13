@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certificate of Achievement</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap">
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #F5F5F5;
+        }
+
+        .certificate-container {
+            width: 1056px;
+            height: 816px;
+            background-color: white;
+            position: relative;
+            margin: auto;
+            padding: 50px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: row;
+        }
+
+        /* Side Image */
+        .side-image {
+            position: absolute;
+            right:0rem;
+            height: auto;
+            margin-right: 20px;
+        }
+
+        /* Content Section */
+        .content-section {
+            flex: 1;
+            position: relative;
+        }
+
+        /* Header Section */
+        .header {
+            position: absolute;
+            top: 58px;
+            left: 0;
+            width: 407px;
+            height: 177.72px;
+        }
+
+        .header img {
+            width: 150px;
+            height: auto;
+        }
+
+        .header h1 {
+            font-size: 60px;
+            font-weight: 700;
+            color: #918F93;
+            text-transform: uppercase;
+            line-height: 90px;
+            margin: 0;
+        }
+
+        .header h2 {
+            font-size: 32px;
+            font-weight: 500;
+            color: #918F93;
+            text-transform: uppercase;
+            margin-top: 10px;
+        }
+
+        /* Recipient Section */
+        .recipient-section {
+            position: absolute;
+            top: 303px;
+            left: 0;
+            width: 701px;
+            height: 270.28px;
+        }
+
+        .recipient-section .recipient-name {
+            font-family: 'Great Vibes', cursive;
+            font-size: 51px;
+            color: #101315;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .recipient-section p {
+            font-size: 20px;
+            color: #746F77;
+            text-align: center;
+            margin: 0;
+        }
+
+        .recipient-section .program-name {
+            font-size: 22px;
+            font-weight: 600;
+            color: #101315;
+            margin-top: 10px;
+        }
+
+        .recipient-section .project-name {
+            font-weight: 600;
+            color: #101315;
+            font-size: 20px;
+        }
+
+        /* Signatures Section */
+        .signatures {
+            position: absolute;
+            left: 0;
+            top: 641px;
+            display: flex;
+            justify-content: space-between;
+            width: 667px;
+        }
+
+        .signature {
+            text-align: center;
+        }
+
+        .signature p {
+            margin: 5px 0;
+            font-size: 16px;
+            color: #4A4A4A;
+            font-weight: 600;
+        }
+
+        .signature .title {
+            font-size: 13px;
+            font-weight: 500;
+            color: #746F77;
+        }
+
+        /* Footer Section */
+        .reference-numbers {
+            position: absolute;
+            left: 0;
+            top: 549.28px;
+            width: 701px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            color: #746F77;
+        }
+
+        .reference-numbers span {
+            font-weight: 600;
+            font-size: 18px;
+            color: #101315;
+        }
+
+        .footer-note {
+            position: absolute;
+            left: 0;
+            top: 776px;
+            font-size: 10px;
+            color: #746F77;
+        }
+
+        /* Decorative Elements */
+        .gold-ribbon {
+            position: absolute;
+            right: 50px;
+            top: 50px;
+            width: 180px;
+            height: auto;
+        }
+
+        .badge-logo {
+            position: absolute;
+            width: 347px;
+            height: 347px;
+            left: 598px;
+            top: 117px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="certificate-container">
+        <img src="https://svgur.com/i/19GZ.svg" alt="Decorative Side Image" class="side-image">
+        <div class="content-section">
+            <div class="header">
+                <img src="https://svgur.com/i/19Es.svg" alt="Mentric Logo">
+                <h1>Certificate</h1>
+                <h2>of Achievement</h2>
+            </div>
+            <div class="recipient-section">
+                <p>This certification is proudly presented to</p>
+                <div class="recipient-name">George Thomas</div>
+                <p>Successfully achieving the highest score in</p>
+                <p class="program-name">Advanced Data Analytics Training Program</p>
+                <p>under <span class="project-name">Project Prerna</span> on <span>August 12, 2024</span></p>
+            </div>
+            <div class="reference-numbers">
+                <div>
+                    Certificate Reference Number: <span>12345667</span>
+                </div>
+                <div>
+                    Recipient Reference Number: <span>12345667</span>
+                </div>
+            </div>
+            <div class="signatures">
+                <div class="signature">
+                    <p>Dr. Tharakan</p>
+                    <p class="title">Training Program Director</p>
+                </div>
+                <div class="signature">
+                    <p>Mr. Dilip Kumar</p>
+                    <p class="title">CEO & Founder</p>
+                </div>
+            </div>
+            <div class="footer-note">
+                Authorized by mentric under project prema
+            </div>
+            <img src="https://i.postimg.cc/02zQHqnq/badge.png" alt="Badge Logo" class="badge-logo">
+        </div>
+    </div>
+</body>
+
+</html>
